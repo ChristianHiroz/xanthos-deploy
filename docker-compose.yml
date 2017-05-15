@@ -1,24 +1,23 @@
 version: '2'
 
 services:
-    db:
-        image: mysql
-        volumes:
-            - "./.data/db:/var/lib/mysql"
-        environment:
-            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-            MYSQL_DATABASE: ${MYSQL_DATABASE}
-            MYSQL_USER: ${MYSQL_USER}
-            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    mysqldb:
+      image: mysql:5.6
+      container_name: mysqldb
+      volumes:
+        - mysql:/var/lib/mysql
+      environment:
+        MYSQL_DATABASE: xanthos
+        MYSQL_ROOT_PASSWORD: poneyDesBois
     php:
         build: php7-fpm
         volumes:
-            - ${SYMFONY_APP_PATH}:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
+            - ${SYMFONY_APP_PATH}:/var/www/html/xanthos
+            - ./logs/symfony:/var/www/html/xanthos/app/logs
     nginx:
         build: nginx
         ports:
-            - 80:80
+            - 8084:80
         volumes_from:
             - php
         volumes:
@@ -26,10 +25,13 @@ services:
     elk:
         image: willdurand/elk
         ports:
-            - 81:80
+            - 8085:80
         volumes:
             - ./elk/logstash:/etc/logstash
             - ./elk/logstash/patterns:/opt/logstash/patterns
         volumes_from:
             - php
             - nginx
+
+volumes:
+  mysql:
