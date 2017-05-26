@@ -12,12 +12,12 @@ services:
     php:
         build: php7-fpm
         volumes:
-            - ${SYMFONY_APP_PATH}:/var/www/html/xanthos
+            - ${SYMFONY_APP_PATH}:/var/www/html/xanthos:rw
             - ./logs/symfony:/var/www/html/xanthos/app/logs
     nginx:
         build: nginx
         ports:
-            - 8084:80
+              - 80:80
         volumes_from:
             - php
         volumes:
